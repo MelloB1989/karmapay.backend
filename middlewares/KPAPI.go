@@ -21,6 +21,7 @@ func KPAPI(c *fiber.Ctx) error {
             }
 			c.Locals("email", decoded["email"])
 			c.Locals("uid", decoded["uid"])
+            c.Locals("kpapi", token)
             return c.Next()
         } else {
             fmt.Println("Invalid Authorization header format")

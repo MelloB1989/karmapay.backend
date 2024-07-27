@@ -1,5 +1,7 @@
 package database
 
+import "encoding/json"
+
 type Customer struct {
 	UID string `json:"uid"`
 	CID string `json:"cid"`
@@ -55,6 +57,6 @@ type RedisOrder struct {
 	RedirectURL string `json:"redirect_url"`
 	Registration string `json:"registration"`
 	OrderCID string `json:"order_cid"`
-	PGOrder string `json:"PGOrder"`
+	PGOrder json.RawMessage `json:"PGOrder"`
 	Timestamp string `json:"timestamp"`
 }

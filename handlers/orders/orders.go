@@ -3,10 +3,14 @@ package handlers
 import (
 	// "fmt"
 	// "net/http"
-	"karmapay/helpers/customers"
+	api "karmapay/helpers/api"
+	users "karmapay/helpers/users"
+	orders "karmapay/helpers/orders"
 	"karmapay/database"
 	"github.com/gofiber/fiber/v2"
 	gonanoid "github.com/matoous/go-nanoid/v2"
+	"encoding/json"
+	"fmt"
 )
 
 // ResponseHTTP represents response body of this API
@@ -17,7 +21,7 @@ type ResponseHTTP struct {
 }
 
 type CreateOrderRequest struct {
-	OrderAmount string `json:"order_amt"`
+	OrderAmount float64 `json:"order_amt"`
 	OrderCurrency string `json:"order_currency"`
 	OrderDescription string `json:"order_description"`
 	OrderMode string `json:"order_mode"`
@@ -39,11 +43,24 @@ func CreateOrder(c *fiber.Ctx) error {
 	var orderData database.RedisOrder = database.RedisOrder{
 		OrderID: oid,
 		OrderStatus: "PENDING",
+		UID: c.Locals("uid").(string),
+		Email: c.Locals("email").(string),
+		API_KEY: api.GetAPIKeyByUIDAndPGEnum(c.Locals("uid").(string), req.OrderMode).APIKey,
+		OrderAmount: fmt.Sprintf("%.9f", req.OrderAmount),
+		OrderCurrency: req.OrderCurrency,
+		OrderDescription: req.OrderDescription,
+		Subdomain: users.GetUserByUID(c.Locals("uid").(string)).Subdomain,
+		OrderMode: req.OrderMode,
+		OrderCID: "",
+		PGOrder: json.RawMessage(`{}`),
+		KPAPI: c.Locals("kpapi").(string),
+		Registration: req.Registration,
+		RedirectURL: req.RedirectURL,
 	}
-	customers.CreateCustomer(customerData)
+	orders.PushOrderToRedis(orderData)
 	return c.JSON(ResponseHTTP{
 		Success: true,
-		Message: "Successfully created user.",
-		Data:    nil,
+		Message: "Successfully created order.",
+		Data:    json.RawMessage(`{"oid": "` + oid + `"}`),
 	})
 }

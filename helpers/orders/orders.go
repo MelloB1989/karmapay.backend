@@ -1,4 +1,4 @@
-package users
+package orders
 
 import (
 	"karmapay/database"

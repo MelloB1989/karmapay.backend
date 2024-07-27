@@ -19,3 +19,18 @@ func CreateUser(User database.User){
 		log.Fatalln(err)
 	}
 }
+
+func GetUserByUID(uid string) database.User {
+	db, err := database.DBConn()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var User database.User
+	err = db.QueryRow(`SELECT * FROM users WHERE uid = $1`, uid).Scan(&User.UID, &User.Username, &User.BusinessName, &User.BusinessURL, &User.PFP, &User.Subdomain, &User.Password)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return User
+}
