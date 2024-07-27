@@ -38,3 +38,23 @@ type User struct {
 	Subdomain string `json:"subdomain"`
 	Password string `json:"password"`
 }
+
+type RedisOrder struct {
+	OrderID string `json:"order_id"`
+	OrderStatus string `json:"order_status"`
+	UID string `json:"uid"`
+	Email string `json:"email"`
+	KPAPI string `json:"kpapi"`
+	API_KEY string `json:"api_key"`
+	OrderAmount string `json:"order_amt"`
+	OrderCurrency string `json:"order_currency"`
+	OrderDescription string `json:"order_description"`
+	Subdomain string `json:"subdomain"`
+	OrderMode string `json:"order_mode"`
+	WebhookURL string `json:"webhook_url"`
+	RedirectURL string `json:"redirect_url"`
+	Registration string `json:"registration"`
+	OrderCID string `json:"order_cid"`
+	PGOrder string `json:"PGOrder"`
+	Timestamp string `json:"timestamp"`
+}

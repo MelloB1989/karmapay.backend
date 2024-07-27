@@ -21,9 +21,10 @@ func KPAPI(c *fiber.Ctx) error {
             }
 			c.Locals("email", decoded["email"])
 			c.Locals("uid", decoded["uid"])
-			fmt.Print(decoded["uid"])
+            return c.Next()
         } else {
             fmt.Println("Invalid Authorization header format")
+            return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
         }
     }
     // If the header does not exist, is empty, or does not match "Bearer <token>", handle accordingly

@@ -16,16 +16,18 @@ type ResponseHTTP struct {
 	Message string      `json:"message"`
 }
 
-type CreateCustomerRequest struct {
-	FirstName string `json:"first_name"`
-	LastName string `json:"last_name"`
-	Email string `json:"email"`
-	Phone string `json:"phone"`
-	UID string `json:"uid"`
+type CreateOrderRequest struct {
+	OrderAmount string `json:"order_amt"`
+	OrderCurrency string `json:"order_currency"`
+	OrderDescription string `json:"order_description"`
+	OrderMode string `json:"order_mode"`
+	WebhookURL string `json:"webhook_url"`
+	RedirectURL string `json:"redirect_url"`
+	Registration string `json:"registration"`
 }
 
-func CreateCustomer(c *fiber.Ctx) error {
-	req := new(CreateCustomerRequest)
+func CreateOrder(c *fiber.Ctx) error {
+	req := new(CreateOrderRequest)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(400).JSON(ResponseHTTP{
 			Success: false,
@@ -33,15 +35,10 @@ func CreateCustomer(c *fiber.Ctx) error {
 			Data:    nil,
 		})
 	}
-	cid, _ := gonanoid.Generate("qwertyuiopasdfghjklzxcvbnm1234567890_-", 10);
-	var customerData database.Customer = database.Customer{
-		C_Email: req.Email,
-		C_Name: req.FirstName+" "+req.LastName,
-		C_Phone: req.Phone,
-		CID: cid,
-		C_Location: "NA",
-		C_IP: "",
-		UID: c.Locals("uid").(string),
+	oid, _ := gonanoid.Generate("qwertyuiopasdfghjklzxcvbnm1234567890_-", 10);
+	var orderData database.RedisOrder = database.RedisOrder{
+		OrderID: oid,
+		OrderStatus: "PENDING",
 	}
 	customers.CreateCustomer(customerData)
 	return c.JSON(ResponseHTTP{
