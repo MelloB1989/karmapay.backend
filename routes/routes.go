@@ -6,7 +6,9 @@ import (
 	customer "karmapay/handlers/customers"
 	order "karmapay/handlers/orders"
 	payment "karmapay/handlers/payment"
+	api "karmapay/handlers/api"
 	middlewares "karmapay/middlewares"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func Users() *fiber.App {
@@ -30,6 +32,12 @@ func Users() *fiber.App {
 	payments := v1.Group("/payment")
 	payments.Post("/verify", payment.VerifyPayment)
 	payments.Post("/success", payment.SuccessPayment)
+
+	//API routes
+	apis := v1.Group("/api")
+	apis.Post("/create", middlewares.IsKarmaAdmin, api.CreateAPI)
+
+	app.Use(cors.New())
 
 	return app
 }

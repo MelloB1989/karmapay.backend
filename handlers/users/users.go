@@ -52,6 +52,7 @@ func CreateUser(c *fiber.Ctx) error {
 		Subdomain: req.Subdomain,
 	}
 	users.CreateUser(userdata)
+	
 	return c.JSON(ResponseHTTP{
 		Success: true,
 		Message: "Successfully created user.",
