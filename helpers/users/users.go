@@ -34,3 +34,18 @@ func GetUserByUID(uid string) database.User {
 
 	return User
 }
+
+func GetUserByUsername(username string) database.User {
+	db, err := database.DBConn()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var User database.User
+	err = db.QueryRow(`SELECT * FROM users WHERE username = $1`, username).Scan(&User.UID, &User.Username, &User.Password, &User.BusinessName, &User.BusinessURL, &User.PFP, &User.Subdomain)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return User
+}

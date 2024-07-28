@@ -37,3 +37,28 @@ func PushOrderToRedis(Order database.RedisOrder) {
 
     client.Set(ctx, Order.OrderID, orderJSON, 0)
 }
+
+func GetOrderFromRedis(OrderID string) (database.RedisOrder, error) {
+    opt, err := redis.ParseURL(config.NewConfig().RedisURL)
+    if err != nil {
+        log.Fatalln("Error parsing Redis URL:", err)
+        return database.RedisOrder{}, err
+    }
+    client := redis.NewClient(opt)
+
+    ctx := context.Background()
+    orderJSON, err := client.Get(ctx, OrderID).Result()
+    if err != nil {
+        log.Println("Error getting order from Redis:", err)
+        return database.RedisOrder{}, err
+    }
+
+    var order database.RedisOrder
+    err = json.Unmarshal([]byte(orderJSON), &order)
+    if err != nil {
+        log.Println("Error unmarshalling order:", err)
+        return database.RedisOrder{}, err
+    }
+
+    return order, nil
+}
