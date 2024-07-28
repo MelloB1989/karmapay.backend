@@ -13,6 +13,11 @@ import (
 
 func Users() *fiber.App {
 	app := fiber.New()
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept, X-Karma-Admin-Auth",
+		AllowMethods: "GET, POST, HEAD, PUT, DELETE, PATCH, OPTIONS",
+	}))
 	v1 := app.Group("/v1")
 
 	//User routes
@@ -37,7 +42,7 @@ func Users() *fiber.App {
 	apis := v1.Group("/api")
 	apis.Post("/create", middlewares.IsKarmaAdmin, api.CreateAPI)
 
-	app.Use(cors.New())
+	// app.Use(cors.New())
 
 	return app
 }
