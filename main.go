@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"github.com/joho/godotenv"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	// "karma_auth/config"
 )
 
@@ -19,5 +20,9 @@ func main() {
 		logger.Error("unable to load .env")
 	}
 	app := routes.Users()
+	// app.Use(cors.New(cors.Config{
+	// 	AllowOrigins: "https://karmapay., https://gofiber.net",
+	// }))
+	app.Use(cors.New())
 	app.Listen(":9080")
 }
